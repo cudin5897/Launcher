@@ -15,9 +15,13 @@ import java.util.List;
 public class AppAdapter extends BaseAdapter {
     Context context;
     List<AppObject> appList;
-    public AppAdapter(Context context, List<AppObject> appList ){
+    int cellHeight;
+
+    public AppAdapter(Context context, List<AppObject> appList, int cellHeight ){
         this.context=context;
         this.appList=appList;
+        this.cellHeight=cellHeight;
+
     }
 
     @Override
@@ -53,6 +57,10 @@ public class AppAdapter extends BaseAdapter {
         ImageView mImage = v.findViewById(R.id.image);
         TextView mLabel = v.findViewById(R.id.label);
 
+
+        LinearLayout.LayoutParams lp =new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,cellHeight);
+        mLayout.setLayoutParams(lp);
+
         mImage.setImageDrawable(appList.get(position).getImage());
         mLabel.setText(appList.get(position).getName());
 
@@ -60,9 +68,17 @@ public class AppAdapter extends BaseAdapter {
         mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent launchAppIntent = context.getPackageManager().getLaunchIntentForPackage(appList.get(position).getPackageName());
-                if(launchAppIntent!=null)
-                    context.startActivity(launchAppIntent);
+                ((MainActivity) context).itemPress(appList.get(position));
+            }
+        });
+
+        mLayout.setOnLongClickListener(new View.OnLongClickListener() {
+
+
+            @Override
+            public boolean onLongClick(View v) {
+                ((MainActivity) context).itemLongPress(appList.get(position));
+                return false;
             }
         });
 
